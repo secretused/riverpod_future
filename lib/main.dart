@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_future/provider.dart';
 
 void main() {
   runApp(ProviderScope(
@@ -29,6 +30,8 @@ class MyHomePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final postalCode = ref.watch(apiProvider).asData?.value;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
@@ -37,12 +40,25 @@ class MyHomePage extends ConsumerWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+            TextField(
+              onChanged: (text) => onPostalCodeChanges(ref, text),
             ),
+            Text(postalCode?.data[0].en.address1 ?? "No Postal Code"),
           ],
         ),
       ),
     );
+  }
+
+  void onPostalCodeChanges(WidgetRef ref, String text) {
+    if (text.length != 7) {
+      return;
+    }
+    try {
+      int.parse(text);
+      // ref.watch(postalCodeProvider.notifier).state = text;
+      ref.watch(postalCodeProvider.notifier).update((state) => state = text);
+      print(text);
+    } catch (ex) {}
   }
 }

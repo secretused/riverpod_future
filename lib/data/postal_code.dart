@@ -13,6 +13,9 @@ class PostalCode with _$PostalCode {
 
   factory PostalCode.fromJson(Map<String, dynamic> json) =>
       _$PostalCodeFromJson(json);
+
+  // Formが空の時の処理
+  static const empty = PostalCode(code: "", data: []);
 }
 
 @freezed
